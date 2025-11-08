@@ -1,8 +1,8 @@
 {
-  "name": "lushay-code",
-  "displayName": "Lushay Code",
-  "description": "Open Source FPGA Toolchain using OSS-Cad-Suite",
-  "version": "0.0.21",
+  "name": "pincfg-editor",
+  "displayName": "Pin Constraint Editor",
+  "description": "Visual editor for PCF, LPF and CST files based on Lushay Code",
+  "version": "0.0.1",
   "license": "MIT",
   "engines": {
     "vscode": "^1.72.0"
@@ -12,19 +12,17 @@
   ],
   "keywords": [
     "fpga",
-    "verilog",
-    "oss-cad-suite",
-    "yosys",
-    "nextpnr",
-    "apicula"
+    "cst",
+    "pcf",
+    "lpf"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/lushaylabs/lushay-code.git"
+    "url": "https://github.com/EDAcation/vscode-pincfg-editor"
   },
   "icon": "icon.png",
   "activationEvents": [],
-  "publisher": "lushay-labs",
+  "publisher": "edacation",
   "main": "./out/extension.js",
   "contributes": {
     "customEditors": [
