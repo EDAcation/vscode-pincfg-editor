@@ -22,39 +22,11 @@
     "type": "git",
     "url": "https://github.com/lushaylabs/lushay-code.git"
   },
-  "icon": "lushay-icon.png",
-  "activationEvents": [
-    "onStartupFinished",
-    "workspaceContains:**/*.v",
-    "workspaceContains:**/*.cst",
-    "onCommand:lushay-code.runFPGAToolchain",
-    "onCommand:lushay-code.selectProject",
-    "onLanguage:verilog"
-  ],
+  "icon": "icon.png",
+  "activationEvents": [],
   "publisher": "lushay-labs",
   "main": "./out/extension.js",
   "contributes": {
-    "viewsContainers": {
-      "panel": [
-        {
-          "id": "lushay-code-module-debugger",
-          "title": "Module Debugger",
-          "icon": "$(clear-all)"
-        }
-      ]
-    },
-    "views": {
-      "lushay-code-module-debugger": [
-        {
-        "type": "webview",
-        "id": "lushay-code-module-debugger-content",
-        "name": "Module Debugger",
-        "canToggleVisibility": true,
-        "order": 10,
-        "when": "resourceExtname == .v"
-        }
-      ]
-    },
     "customEditors": [
       {
         "viewType": "lushay-code.constraintsEditor",
@@ -73,73 +45,45 @@
         "priority": "default"
       }
     ],
-    "commands": [
-      {
-        "command": "lushay-code.runFPGAToolchain",
-        "title": "Run FPGA Toolchain"
-      },
-      {
-        "command": "lushay-code.selectProject",
-        "title": "Select FPGA Project"
-      }
-    ],
-    "configuration": [
-      {
-        "title": "Lushay Code",
-        "properties": {
-          "lushay.OssCadSuite.path": {
-            "type": "string",
-            "default": "",
-            "description": "The path to OSS Cad Suite"
-          },
-          "lushay.Build.toolchain": {
-            "type": "string",
-            "enum": [
-              "open-source",
-              "cloud"
-            ],
-            "description": "The toolchain to use for building",
-            "default": "open-source"
-          },
-          "lushay.Build.cloudApiKey": {
-            "type": "string",
-            "description": "API Key for cloud build",
-            "default": ""
-          },
-          "lushay.Build.overrideNextpnrPath": {
-            "type": "string",
-            "description": "Override the path to nextpnr",
-            "default": ""
-          },
-          "lushay.Build.overrideYosysPath": {
-            "type": "string",
-            "description": "Override the path to yosys",
-            "default": ""
-          },
-          "lushay.Build.overrideOpenFpgaLoaderPath": {
-            "type": "string",
-            "description": "Override the path to openFPGALoader",
-            "default": ""
-          }
-        }
-      }
-    ],
-    "jsonValidation": [
-      {
-        "fileMatch": "*.lushay.json",
-        "url": "./lushay.schema.json"
-      }
-    ],
     "languages": [
       {
-        "id": "fpga-toolchain-output"
-      }
-    ],
-    "grammars": [
+        "id": "cst",
+        "extensions": [
+          ".cst"
+        ],
+        "aliases": [
+          "CST File"
+        ],
+        "icon": {
+          "light": "./icon.svg",
+          "dark": "./icon.svg"
+        }
+      },
       {
-        "language": "fpga-toolchain-output",
-        "scopeName": "source.fpga-toolchain-output",
-        "path": "./syntaxes/fpga-toolchain-output.tmLanguage.json"
+        "id": "pcf",
+        "extensions": [
+          ".pcf"
+        ],
+        "aliases": [
+          "PCF File"
+        ],
+        "icon": {
+          "light": "./icon.svg",
+          "dark": "./icon.svg"
+        }
+      },
+      {
+        "id": "lpf",
+        "extensions": [
+          ".lpf"
+        ],
+        "aliases": [
+          "LPF File"
+        ],
+        "icon": {
+          "light": "./icon.svg",
+          "dark": "./icon.svg"
+        }
       }
     ]
   },
