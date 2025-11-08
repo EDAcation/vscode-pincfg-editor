@@ -736,7 +736,7 @@ function main() {
     const pinContainer = document.getElementById('pin-container');
     const cancelBoardPopupBtn = document.getElementById('cancel-board');
     const boardPopup = document.getElementById('board-popup-container');
-    const selectPortBtn = document.getElementById('select-port');
+    // const selectPortBtn = document.getElementById('select-port');
     const cancelPortPopupBtn = document.getElementById('cancel-port');
     const portPopup = document.getElementById('port-popup-container');
     const portContainer = document.getElementById('port-container');
@@ -834,21 +834,21 @@ function main() {
         }
     });
 
-    selectPortBtn.addEventListener('click', async () => {
-        portContainer.innerHTML = '';
-        portsLoader.classList.remove('hide');
-        if (!noPortsMessage.classList.contains('hide')) {
-            noPortsMessage.classList.add('hide');
-        }
-        if (!portContainer.classList.contains('hide')) {
-            portContainer.classList.add('hide');
-        }
-        ports = [];
-        portPopup.classList.remove('hide');
-        vscode.postMessage({ 
-            type: 'getPorts'
-        });
-    })
+    // selectPortBtn.addEventListener('click', async () => {
+    //     portContainer.innerHTML = '';
+    //     portsLoader.classList.remove('hide');
+    //     if (!noPortsMessage.classList.contains('hide')) {
+    //         noPortsMessage.classList.add('hide');
+    //     }
+    //     if (!portContainer.classList.contains('hide')) {
+    //         portContainer.classList.add('hide');
+    //     }
+    //     ports = [];
+    //     portPopup.classList.remove('hide');
+    //     vscode.postMessage({ 
+    //         type: 'getPorts'
+    //     });
+    // })
     portPopup.addEventListener('click', (e) => {
         if (e.target === portPopup) {
             portPopup.classList.add('hide');

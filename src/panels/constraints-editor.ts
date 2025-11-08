@@ -723,7 +723,6 @@ export class ConstraintsEditor implements CustomEditorProvider<ConstraintsFileDo
                                         <section>
                                             <label>Port Name</label>
                                             <vscode-text-field id="edit-port-name"></vscode-text-field>
-                                            <vscode-link id="select-port" href="#">Select From Top Module</vscode-link>
                                         </section>
                                         <section>
                                             <label>Location</label>
