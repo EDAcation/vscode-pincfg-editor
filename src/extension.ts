@@ -154,61 +154,61 @@ function convertLinesToIssue(lines: string[]): Issue | undefined {
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-    myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    myStatusBarItem.text = '$(megaphone) FPGA Toolchain';
-    myStatusBarItem.command = RUN_TOOLCHAIN_CMD_ID;
+    // myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    // myStatusBarItem.text = '$(megaphone) FPGA Toolchain';
+    // myStatusBarItem.command = RUN_TOOLCHAIN_CMD_ID;
 
-    projectStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    projectStatusBarItem.text = selectedProject?.name || '<Auto-Detect Project>';
-    projectStatusBarItem.command = SELECT_PROJECT_CMD_ID;
+    // projectStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    // projectStatusBarItem.text = selectedProject?.name || '<Auto-Detect Project>';
+    // projectStatusBarItem.command = SELECT_PROJECT_CMD_ID;
 
-    context.subscriptions.push(myStatusBarItem);
-    context.subscriptions.push(vscode.commands.registerCommand(RUN_TOOLCHAIN_CMD_ID, clickedPanelButton));
+    // context.subscriptions.push(myStatusBarItem);
+    // context.subscriptions.push(vscode.commands.registerCommand(RUN_TOOLCHAIN_CMD_ID, clickedPanelButton));
 
-    context.subscriptions.push(projectStatusBarItem);
-    context.subscriptions.push(vscode.commands.registerCommand(SELECT_PROJECT_CMD_ID, selectProjectFile));
-    projectStatusBarItem.show();
+    // context.subscriptions.push(projectStatusBarItem);
+    // context.subscriptions.push(vscode.commands.registerCommand(SELECT_PROJECT_CMD_ID, selectProjectFile));
+    // projectStatusBarItem.show();
 
-    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((editor) => {
-        updateStatusBarItem();
-        if (editor?.document.uri) {
-            ModuleDebuggerWebviewContentProvider.updateCurrentFile(editor.document.uri);
-        }
-    }));
-    updateStatusBarItem();
-    context.subscriptions.push(ConstraintsEditor.register(context, getOssCadSuitePath, () => selectedProject, getConfigOverrides));
+    // context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((editor) => {
+    //     updateStatusBarItem();
+    //     if (editor?.document.uri) {
+    //         ModuleDebuggerWebviewContentProvider.updateCurrentFile(editor.document.uri);
+    //     }
+    // }));
+    // updateStatusBarItem();
+    context.subscriptions.push(ConstraintsEditor.register(context, () => selectedProject, getConfigOverrides));
 
     // diagnostics
-    const verilogDiagnostics = vscode.languages.createDiagnosticCollection("verilog");
-    context.subscriptions.push(verilogDiagnostics);
+    // const verilogDiagnostics = vscode.languages.createDiagnosticCollection("verilog");
+    // context.subscriptions.push(verilogDiagnostics);
 
-    if (vscode.window.activeTextEditor) {
-        await refreshDiagnostics(vscode.window.activeTextEditor.document, verilogDiagnostics);
-    }
-    context.subscriptions.push(
-        vscode.workspace.onDidSaveTextDocument(document => {
-            refreshDiagnostics(document, verilogDiagnostics);
-            if (document.uri) {
-                ModuleDebuggerWebviewContentProvider.updateCurrentFile(document.uri);
-            }
-        })
-    );
+    // if (vscode.window.activeTextEditor) {
+    //     await refreshDiagnostics(vscode.window.activeTextEditor.document, verilogDiagnostics);
+    // }
+    // context.subscriptions.push(
+    //     vscode.workspace.onDidSaveTextDocument(document => {
+    //         refreshDiagnostics(document, verilogDiagnostics);
+    //         if (document.uri) {
+    //             ModuleDebuggerWebviewContentProvider.updateCurrentFile(document.uri);
+    //         }
+    //     })
+    // );
 
-    context.subscriptions.push(
-        vscode.workspace.onDidChangeTextDocument(e => () => {
-            refreshDiagnostics(e.document, verilogDiagnostics);
-            ModuleDebuggerWebviewContentProvider.updateCurrentFile(e.document.uri);
-        })
-    );
+    // context.subscriptions.push(
+    //     vscode.workspace.onDidChangeTextDocument(e => () => {
+    //         refreshDiagnostics(e.document, verilogDiagnostics);
+    //         ModuleDebuggerWebviewContentProvider.updateCurrentFile(e.document.uri);
+    //     })
+    // );
 
-    context.subscriptions.push(
-        vscode.workspace.onDidCloseTextDocument(doc => verilogDiagnostics.delete(doc.uri))
-    );
+    // context.subscriptions.push(
+    //     vscode.workspace.onDidCloseTextDocument(doc => verilogDiagnostics.delete(doc.uri))
+    // );
 
-    context.subscriptions.push(ModuleDebuggerWebviewContentProvider.register(context.extensionUri, getOssCadSuitePath, () => selectedProject, getConfigOverrides));
-    if (vscode.window.activeTextEditor?.document.uri) {
-        ModuleDebuggerWebviewContentProvider.updateCurrentFile(vscode.window.activeTextEditor?.document.uri);
-    }
+    // context.subscriptions.push(ModuleDebuggerWebviewContentProvider.register(context.extensionUri, getOssCadSuitePath, () => selectedProject, getConfigOverrides));
+    // if (vscode.window.activeTextEditor?.document.uri) {
+    //     ModuleDebuggerWebviewContentProvider.updateCurrentFile(vscode.window.activeTextEditor?.document.uri);
+    // }
 }
 
 async function getConfigOverrides(): Promise<Record<string, string>> {
@@ -220,66 +220,66 @@ async function getConfigOverrides(): Promise<Record<string, string>> {
     }
 }
 
-async function selectProjectFile(): Promise<void> {
-    if (!vscode.workspace.workspaceFolders?.length) {
-        vscode.window.showErrorMessage('No workspace open');
-        return;
-    }
-    const projectFiles = await vscode.workspace.findFiles('**/*.lushay.json');
-    const projectMap: Record<string, string> = {};
-    const projectFullMap: Record<string, string> = {};
-    let useFullMap = false;
-    projectFiles.forEach((projectFile) => {
-        projectFullMap[path.relative(vscode.workspace.workspaceFolders![0].uri.fsPath, projectFile.fsPath)] = projectFile.fsPath;
-        if (projectMap[path.basename(projectFile.fsPath)]) {
-            useFullMap = true;
-        }
-        projectMap[path.basename(projectFile.fsPath)] = projectFile.fsPath;
-    });
-    const mapToUse = useFullMap ? projectFullMap : projectMap;
-    const projectFileNames = Object.keys(mapToUse);
-    if (selectedProject) {
-        projectFileNames.push('Unset Selected Project');
-    }
-    projectFileNames.push('+ Create new Project File');
+// async function selectProjectFile(): Promise<void> {
+//     if (!vscode.workspace.workspaceFolders?.length) {
+//         vscode.window.showErrorMessage('No workspace open');
+//         return;
+//     }
+//     const projectFiles = await vscode.workspace.findFiles('**/*.lushay.json');
+//     const projectMap: Record<string, string> = {};
+//     const projectFullMap: Record<string, string> = {};
+//     let useFullMap = false;
+//     projectFiles.forEach((projectFile) => {
+//         projectFullMap[path.relative(vscode.workspace.workspaceFolders![0].uri.fsPath, projectFile.fsPath)] = projectFile.fsPath;
+//         if (projectMap[path.basename(projectFile.fsPath)]) {
+//             useFullMap = true;
+//         }
+//         projectMap[path.basename(projectFile.fsPath)] = projectFile.fsPath;
+//     });
+//     const mapToUse = useFullMap ? projectFullMap : projectMap;
+//     const projectFileNames = Object.keys(mapToUse);
+//     if (selectedProject) {
+//         projectFileNames.push('Unset Selected Project');
+//     }
+//     projectFileNames.push('+ Create new Project File');
 
-    const selected = await vscode.window.showQuickPick(projectFileNames, {ignoreFocusOut: true, canPickMany: false, title: 'Choose Project File'});
-    if (!selected) {
-        return;
-    }
-    if (selected === 'Unset Selected Project') {
-        selectedProject = undefined;
-        projectStatusBarItem.text = '<Auto-Detect Project>';
-        if (vscode.window.activeTextEditor?.document.uri) {
-            ModuleDebuggerWebviewContentProvider.updateCurrentFile(vscode.window.activeTextEditor?.document.uri);
-        }
-        return;
-    }
-    if (selected === '+ Create new Project File') {
-        let name = await vscode.window.showInputBox({title: 'Project file Name', ignoreFocusOut: true});
-        if (!name) {return;}
+//     const selected = await vscode.window.showQuickPick(projectFileNames, {ignoreFocusOut: true, canPickMany: false, title: 'Choose Project File'});
+//     if (!selected) {
+//         return;
+//     }
+//     if (selected === 'Unset Selected Project') {
+//         selectedProject = undefined;
+//         projectStatusBarItem.text = '<Auto-Detect Project>';
+//         if (vscode.window.activeTextEditor?.document.uri) {
+//             ModuleDebuggerWebviewContentProvider.updateCurrentFile(vscode.window.activeTextEditor?.document.uri);
+//         }
+//         return;
+//     }
+//     if (selected === '+ Create new Project File') {
+//         let name = await vscode.window.showInputBox({title: 'Project file Name', ignoreFocusOut: true});
+//         if (!name) {return;}
 
-        if (!name.endsWith('.lushay.json')) {
-            name = name + '.lushay.json';
-        }
-        const fullPath = path.isAbsolute(name) ? name : path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, name);
-        writeFileSync(fullPath, JSON.stringify({name: name.replace(/\.lushay\.json$/, ''), includedFiles: 'all'}, undefined, 4));
-        projectStatusBarItem.text = name;
-        selectedProject = {name, path: fullPath};
-        const pFile = await vscode.workspace.openTextDocument(fullPath);
-        await vscode.window.showTextDocument(pFile);
-        return
-    }
-    projectStatusBarItem.text = selected;
-    selectedProject = {name: selected, path: useFullMap ? projectFullMap[selected] : projectMap[selected]};
-    if (vscode.window.activeTextEditor?.document.uri) {
-        ModuleDebuggerWebviewContentProvider.updateCurrentFile(vscode.window.activeTextEditor?.document.uri);
-    }
-}
+//         if (!name.endsWith('.lushay.json')) {
+//             name = name + '.lushay.json';
+//         }
+//         const fullPath = path.isAbsolute(name) ? name : path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, name);
+//         writeFileSync(fullPath, JSON.stringify({name: name.replace(/\.lushay\.json$/, ''), includedFiles: 'all'}, undefined, 4));
+//         projectStatusBarItem.text = name;
+//         selectedProject = {name, path: fullPath};
+//         const pFile = await vscode.workspace.openTextDocument(fullPath);
+//         await vscode.window.showTextDocument(pFile);
+//         return
+//     }
+//     projectStatusBarItem.text = selected;
+//     selectedProject = {name: selected, path: useFullMap ? projectFullMap[selected] : projectMap[selected]};
+//     if (vscode.window.activeTextEditor?.document.uri) {
+//         ModuleDebuggerWebviewContentProvider.updateCurrentFile(vscode.window.activeTextEditor?.document.uri);
+//     }
+// }
 
-function updateStatusBarItem(): void {
-    myStatusBarItem.show();
-}
+// function updateStatusBarItem(): void {
+//     myStatusBarItem.show();
+// }
 
 function writeToBoth(str: string) {
     outputPanel?.append(str);

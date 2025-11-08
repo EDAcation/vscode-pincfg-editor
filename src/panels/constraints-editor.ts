@@ -233,9 +233,9 @@ export class ConstraintsEditor implements CustomEditorProvider<ConstraintsFileDo
     private static getSelectedProject: undefined | (() => {name: string, path: string} | undefined);
     private static getOverridePaths: undefined | (() => Promise<Record<string, string>>);
 
-    public static register(context: ExtensionContext, getOssCadSuitePath: (() => Promise<string | undefined>), getSelectedProject: () => {name: string, path: string} | undefined, getOverridePaths: () => Promise<Record<string, string>>): VSCodeDisposable {
+    public static register(context: ExtensionContext, getSelectedProject: () => {name: string, path: string} | undefined, getOverridePaths: () => Promise<Record<string, string>>): VSCodeDisposable {
         ConstraintsEditor.getSelectedProject = getSelectedProject;
-        ConstraintsEditor.getOssCadSuitePath = getOssCadSuitePath;
+        // ConstraintsEditor.getOssCadSuitePath = getOssCadSuitePath;
         ConstraintsEditor.getOverridePaths = getOverridePaths;
         commands.registerCommand('lushay-code.constraintsEditor.new', () => {
             const workspaceFolders = workspace.workspaceFolders;
