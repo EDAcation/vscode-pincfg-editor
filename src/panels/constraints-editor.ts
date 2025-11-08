@@ -1,7 +1,7 @@
-import { spawnSync } from "child_process";
-import path = require("path");
+// import { spawnSync } from "child_process";
+// import path = require("path");
 import { workspace, Disposable as VSCodeDisposable, window as vsCodeWindow, commands, ExtensionContext, EventEmitter, CancellationToken, CustomDocumentBackup, Uri, ViewColumn, WebviewPanel, window, CustomDocument, CustomEditorProvider, CustomDocumentBackupContext, CustomDocumentContentChangeEvent, CustomDocumentEditEvent, CustomDocumentOpenContext, Event, Webview } from "vscode";
-import { parseProjectFile } from "../projecfile";
+// import { parseProjectFile } from "../projecfile";
 
 export function disposeAll(disposables: VSCodeDisposable[]): void {
     while (disposables.length) {
@@ -233,10 +233,10 @@ export class ConstraintsEditor implements CustomEditorProvider<ConstraintsFileDo
     private static getSelectedProject: undefined | (() => {name: string, path: string} | undefined);
     private static getOverridePaths: undefined | (() => Promise<Record<string, string>>);
 
-    public static register(context: ExtensionContext, getSelectedProject: () => {name: string, path: string} | undefined, getOverridePaths: () => Promise<Record<string, string>>): VSCodeDisposable {
-        ConstraintsEditor.getSelectedProject = getSelectedProject;
+    public static register(context: ExtensionContext): VSCodeDisposable {
+        // ConstraintsEditor.getSelectedProject = getSelectedProject;
         // ConstraintsEditor.getOssCadSuitePath = getOssCadSuitePath;
-        ConstraintsEditor.getOverridePaths = getOverridePaths;
+        // ConstraintsEditor.getOverridePaths = getOverridePaths;
         commands.registerCommand('lushay-code.constraintsEditor.new', () => {
             const workspaceFolders = workspace.workspaceFolders;
             if (!workspaceFolders) {
@@ -350,8 +350,9 @@ export class ConstraintsEditor implements CustomEditorProvider<ConstraintsFileDo
         webviewPanel.webview.html = this.getHTML(webviewPanel.webview);
 
         webviewPanel.webview.onDidReceiveMessage(e => this.onMessage(document, e));
-        const selectedProject = ConstraintsEditor.getSelectedProject?.();
-        const projectFile = await parseProjectFile(undefined, selectedProject?.path);
+        // const selectedProject = ConstraintsEditor.getSelectedProject?.();
+        // const projectFile = await parseProjectFile(undefined, selectedProject?.path);
+        const board = 'tangnano9k';
         // Wait for the webview to be properly ready before we init
         webviewPanel.webview.onDidReceiveMessage(e => {
             if (e.type === 'ready') {
@@ -361,7 +362,7 @@ export class ConstraintsEditor implements CustomEditorProvider<ConstraintsFileDo
                         untitled: true,
                         editable: true,
                         uri: document.uri.toString(),
-                        board: projectFile?.board || 'tangnano9k'
+                        board
                     });
                 } else {
                     const editable = workspace.fs.isWritableFileSystem(document.uri.scheme);
@@ -370,11 +371,9 @@ export class ConstraintsEditor implements CustomEditorProvider<ConstraintsFileDo
                         value: document.documentData,
                         editable,
                         uri: document.uri.toString(),
-                        board: projectFile?.board || 'tangnano9k'
+                        board
                     });
                 }
-            } else if (e.type === 'getPorts') {
-                this.getPorts(webviewPanel);
             }
         });
     }
@@ -407,48 +406,48 @@ export class ConstraintsEditor implements CustomEditorProvider<ConstraintsFileDo
         }
     }
 
-    private async getPorts(webview: WebviewPanel) {
-        const ossCadPath = await ConstraintsEditor.getOssCadSuitePath?.();
-        if (!ossCadPath) {
-            return;
-        }
-        const selectedProject = ConstraintsEditor.getSelectedProject?.();
-        const projectFile = await parseProjectFile(undefined, selectedProject?.path);
-        if (!projectFile) {
-            return;
-        }
-        const overrides = await ConstraintsEditor.getOverridePaths?.() || {};
-        const yosysPath = overrides['yosys'] || path.join(ossCadPath, 'yosys');
-        const ossRootPath = path.resolve(ossCadPath, '..');
-        const res = spawnSync(yosysPath,  ['-p', `read_verilog ${projectFile.includedFilePaths.join(' ')}; portlist ${projectFile.top || 'top'}`], {
-            env: {
-                PATH: [
-                    path.join(ossRootPath, 'bin'),
-                    path.join(ossRootPath, 'lib'),
-                    path.join(ossRootPath, 'py3bin'),
-                    process.env.PATH
-                ].join(process.platform === 'win32' ? ';' : ':')
-            },
-            cwd: projectFile.basePath
-        });
-        const ports: string[] = [];
-        const lines = res.stdout.toString().split('\n');
-        lines.forEach((line) => {
-            const portMatch = line.match(/(input|output|inout) \[([0-9]+):([0-9]+)\] ([^\n]+)/);
-            if (portMatch) {
-                const portSize = Math.abs((+portMatch[2]) - (+portMatch[3])) + 1;
-                if (portSize === 1) {
-                    ports.push(portMatch[4].trim());
-                } else {
-                    for (let i = 0; i < portSize; i += 1) {
-                        ports.push(`${portMatch[4].trim()}[${i}]`);
-                    }
-                }
-            }
-        })
-        this.postMessage(webview, 'portResponse', {ports})
+    // private async getPorts(webview: WebviewPanel) {
+    //     const ossCadPath = await ConstraintsEditor.getOssCadSuitePath?.();
+    //     if (!ossCadPath) {
+    //         return;
+    //     }
+    //     const selectedProject = ConstraintsEditor.getSelectedProject?.();
+    //     const projectFile = await parseProjectFile(undefined, selectedProject?.path);
+    //     if (!projectFile) {
+    //         return;
+    //     }
+    //     const overrides = await ConstraintsEditor.getOverridePaths?.() || {};
+    //     const yosysPath = overrides['yosys'] || path.join(ossCadPath, 'yosys');
+    //     const ossRootPath = path.resolve(ossCadPath, '..');
+    //     const res = spawnSync(yosysPath,  ['-p', `read_verilog ${projectFile.includedFilePaths.join(' ')}; portlist ${projectFile.top || 'top'}`], {
+    //         env: {
+    //             PATH: [
+    //                 path.join(ossRootPath, 'bin'),
+    //                 path.join(ossRootPath, 'lib'),
+    //                 path.join(ossRootPath, 'py3bin'),
+    //                 process.env.PATH
+    //             ].join(process.platform === 'win32' ? ';' : ':')
+    //         },
+    //         cwd: projectFile.basePath
+    //     });
+    //     const ports: string[] = [];
+    //     const lines = res.stdout.toString().split('\n');
+    //     lines.forEach((line) => {
+    //         const portMatch = line.match(/(input|output|inout) \[([0-9]+):([0-9]+)\] ([^\n]+)/);
+    //         if (portMatch) {
+    //             const portSize = Math.abs((+portMatch[2]) - (+portMatch[3])) + 1;
+    //             if (portSize === 1) {
+    //                 ports.push(portMatch[4].trim());
+    //             } else {
+    //                 for (let i = 0; i < portSize; i += 1) {
+    //                     ports.push(`${portMatch[4].trim()}[${i}]`);
+    //                 }
+    //             }
+    //         }
+    //     })
+    //     this.postMessage(webview, 'portResponse', {ports})
         
-    }
+    // }
 
     // public static render(extensionUri: Uri) {
     //     if (ConstraintsEditor.currentPanel) {
