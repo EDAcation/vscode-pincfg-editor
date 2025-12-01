@@ -2,7 +2,7 @@
   "name": "pincfg-editor",
   "displayName": "Pin Constraint Editor",
   "description": "Visual editor for PCF, LPF and CST files based on Lushay Code",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "engines": {
     "vscode": "^1.72.0"
