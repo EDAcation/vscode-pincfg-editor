@@ -669,6 +669,12 @@ const showBoardImage = (boardImages, chosenBoard) => {
     }
 }
 
+const scaleImageCoordinate = (boardImages, chosenBoard, coordinate) => {
+    const imageWidth = 600;  // width of the image element
+    const imageNatWidth = boardImages[chosenBoard].naturalWidth;  // natural width of the image; coordinates are set relative to this widthcale
+    return coordinate * (imageWidth / imageNatWidth);
+}
+
 const recalculateOptions = (row) => {
     const options = [];
 
@@ -798,6 +804,9 @@ function main() {
         showBoardImage(boardImages, board);
         pinContainer.innerHTML = '';
         pins.forEach((pin, i) => {
+            const x = scaleImageCoordinate(boardImages, board, pin.x);
+            const y = scaleImageCoordinate(boardImages, board, pin.y);
+
             const button = document.createElement('vscode-button');
             button.id = `pin${i}`;
             button.setAttribute('pinNumber', `${pin.pinNumber}`);
@@ -808,8 +817,8 @@ function main() {
             icon.classList.add('codicon-pass-filled');
             button.appendChild(icon);
             button.addEventListener('click', () => selectPin(pin.pinNumber));
-            button.style.left = `${pin.x}px`;
-            button.style.top = `${pin.y}px`;
+            button.style.left = `${x}px`;
+            button.style.top = `${y}px`;
             pinContainer.appendChild(button);
         });
         updateEditWindow();
