@@ -632,7 +632,68 @@ const pinLocations = {
         { x: 568, y: 188, pinNumber: 16 },
 
     ],
-
+    'FPGA iCE40 LP384 CM49': [
+        // { x: 176, y: 46, pinNumber: '--' },
+        // { x: 176, y: 71, pinNumber: '--' },
+        { x: 277, y: 46, pinNumber: 'A2' },
+        { x: 277, y: 71, pinNumber: 'B3' },
+        { x: 377, y: 46, pinNumber: 'C4' },
+        { x: 377, y: 71, pinNumber: 'A3' },
+        { x: 477, y: 46, pinNumber: 'A4' },
+        { x: 477, y: 71, pinNumber: 'B4' },
+        { x: 577, y: 46, pinNumber: 'D4' },
+        { x: 577, y: 71, pinNumber: 'A5' },
+        { x: 677, y: 46, pinNumber: 'A7' },
+        { x: 677, y: 71, pinNumber: 'A6' },
+ 
+        // { x: 778, y: 146, pinNumber: '--' },
+        // { x: 778, y: 171, pinNumber: '--' },    
+        // { x: 778, y: 246, pinNumber: '--' },
+        // { x: 778, y: 271, pinNumber: '--' },
+        { x: 778, y: 346, pinNumber: 'C5' },
+        { x: 778, y: 371, pinNumber: 'C7' },
+        { x: 778, y: 447, pinNumber: 'C6' },
+        { x: 778, y: 472, pinNumber: 'D7' },
+        { x: 778, y: 547, pinNumber: 'D6' },
+        { x: 778, y: 572, pinNumber: 'E7' },
+        { x: 778, y: 648, pinNumber: 'F7' },
+        // { x: 778, y: 673, pinNumber: '--' },
+        // { x: 778, y: 748, pinNumber: '--' },
+        // { x: 778, y: 773, pinNumber: '--' },
+        // { x: 778, y: 848, pinNumber: '--' },
+        // { x: 778, y: 873, pinNumber: '--' },
+ 
+        // { x: 175, y: 948, pinNumber: '--' },
+        // { x: 175, y: 973, pinNumber: '--' },
+        // { x: 276, y: 948, pinNumber: '--' },
+        // { x: 276, y: 973, pinNumber: '--' },
+        { x: 377, y: 948, pinNumber: 'F3' },
+        { x: 377, y: 973, pinNumber: 'G3' },
+        { x: 478, y: 948, pinNumber: 'G4' },
+        { x: 478, y: 973, pinNumber: 'F4' },
+        { x: 578, y: 948, pinNumber: 'G6' },
+        { x: 578, y: 973, pinNumber: 'F5' },
+        { x: 678, y: 948, pinNumber: 'E6' },
+        { x: 678, y: 973, pinNumber: 'F6' },
+ 
+ 
+        // { x: 76, y: 146, pinNumber: '--' },
+        // { x: 76, y: 171, pinNumber: '--' },    
+        { x: 76, y: 246, pinNumber: 'B1' },
+        { x: 76, y: 271, pinNumber: 'A1' },
+        { x: 76, y: 346, pinNumber: 'C2' },
+        { x: 76, y: 371, pinNumber: 'B2' },
+        { x: 76, y: 447, pinNumber: 'C1' },
+        { x: 76, y: 472, pinNumber: 'D2' },
+        { x: 76, y: 547, pinNumber: 'E2' },
+        { x: 76, y: 572, pinNumber: 'D1' },
+        // { x: 76, y: 648, pinNumber: '--' },
+        // { x: 76, y: 673, pinNumber: '--' },
+        { x: 76, y: 748, pinNumber: 'F1' },
+        { x: 76, y: 773, pinNumber: 'D3' },
+        { x: 76, y: 848, pinNumber: 'G1' },
+        { x: 76, y: 873, pinNumber: 'F2' },
+    ]
 }
 
 const getBoardImages = () => {
@@ -645,6 +706,7 @@ const getBoardImages = () => {
     const icebreakerBoard = document.getElementById('icebreaker-board');
     const icestickBoard = document.getElementById('icestick-board');
     const upduinoBoard31 = document.getElementById('upduino31-board');
+    const fpgaice40lp384cm49Board = document.getElementById('fpgaice40lp384cm49-board');
 
     return {
         'Tang Nano 20K': tangnano20kBoard,
@@ -655,7 +717,8 @@ const getBoardImages = () => {
         'iCEBreaker': icebreakerBoard,
         'iCEStick': icestickBoard,
         'Orange Crab': orangeCrabBoard,
-        'UPduino 3.1': upduinoBoard31
+        'UPduino 3.1': upduinoBoard31,
+        'FPGA iCE40 LP384 CM49': fpgaice40lp384cm49Board,
     }
 }
 
@@ -1346,7 +1409,7 @@ function main() {
             if (['Orange Crab'].includes(board)) {
                 return 'ecp5';
             }
-            if (['iCEBreaker', 'iCEStick', 'UPduino 3.1'].includes(board)) {
+            if (['iCEBreaker', 'iCEStick', 'UPduino 3.1', 'FPGA iCE40 LP384 CM49'].includes(board)) {
                 return 'ice';
             }
         }
@@ -1550,7 +1613,8 @@ function main() {
                         'orangeCrab': 'Orange Crab',
                         'icebreaker': 'iCEBreaker',
                         'icestick': 'iCEStick',
-                        'upduino31': 'UPduino 3.1'
+                        'upduino31': 'UPduino 3.1',
+                        'fpgaice40lp384cm49': 'FPGA iCE40 LP384 CM49'
                     }
                     const boardName = reverseBoardMap[body.board] || 'Tang Nano 9K';
                     board = boardSelect.value = boardName;
